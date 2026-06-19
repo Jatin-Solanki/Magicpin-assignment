@@ -173,7 +173,7 @@ async function sendMessage(){
     let input=document.getElementById("message");
     let text=input.value.trim();
 
-    if(text==="") return;
+    if(!text) return;
 
     let chat=document.getElementById("chat");
 
@@ -184,20 +184,36 @@ async function sendMessage(){
 
     try{
 
-        let response=await fetch("/v1/healthz");
+        let payload = {
+            conversation_id: "web-chat-demo",
+            merchant_id: "merchant-001",
+            customer_id: "customer-001",
+            from_role: "merchant",
+            message: text,
+            received_at: new Date().toISOString(),
+            turn_number: 1
+        };
 
-        let data=await response.json();
+        let response = await fetch("/v1/reply",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        let data = await response.json();
 
         chat.innerHTML +=
         `<div class="bot-message">
-            Server Status: ${data.status}
+            ${JSON.stringify(data,null,2)}
          </div>`;
 
     }catch(err){
 
         chat.innerHTML +=
         `<div class="bot-message">
-            Could not connect to backend.
+            Error: ${err}
          </div>`;
     }
 
