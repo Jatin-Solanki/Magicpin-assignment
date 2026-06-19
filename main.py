@@ -42,7 +42,7 @@ last_keep_alive = time.time()
 
 @app.get("/")
 async def root():
-    return {"message": "Vera Merchant AI Assistant v11 by Jatin Solanki", "docs": "/docs"}
+    return FileResponse("chat.html")
 
 @app.get("/keep-alive")
 async def keep_alive():
