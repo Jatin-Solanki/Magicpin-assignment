@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from pydantic import BaseModel
 import httpx
 from contextlib import asynccontextmanager
@@ -43,9 +43,18 @@ last_keep_alive = time.time()
 from pathlib import Path
 from fastapi.responses import FileResponse
 
-@app.get("/")
+from fastapi.responses import HTMLResponse
+
+@app.get("/", response_class=HTMLResponse)
 async def root():
-    return FileResponse(Path(__file__).parent / "chat.html")
+    return """
+    <html>
+      <body>
+        <h1>Vera AI Assistant</h1>
+        <p>Chat UI deployed successfully.</p>
+      </body>
+    </html>
+    """
 
 @app.get("/keep-alive")
 async def keep_alive():
