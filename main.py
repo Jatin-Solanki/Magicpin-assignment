@@ -14,7 +14,7 @@ from pydantic import BaseModel
 import httpx
 from contextlib import asynccontextmanager
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
+from pydantic import BaseModel
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -2603,6 +2603,22 @@ def preload_contexts_from_dir(dataset_dir: str) -> dict:
     logger.info(f"Preloaded: {loaded}")
     return loaded
 
+          class ChatRequest(BaseModel):
+    message: str
+
+
+@app.post("/chat")
+async def chat(req: ChatRequest):
+
+    system = "You are a helpful AI assistant."
+
+    answer = await call_llm_ladder(
+        system=system,
+        user=req.message,
+        budget=10.0
+    )
+
+    return {"reply": answer}
 
 # Run preload if enabled
 _ENABLE_PRELOAD = os.getenv("ENABLE_PRELOAD", "false").lower() == "true"
