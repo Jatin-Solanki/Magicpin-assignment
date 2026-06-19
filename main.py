@@ -2603,14 +2603,17 @@ def preload_contexts_from_dir(dataset_dir: str) -> dict:
     logger.info(f"Preloaded: {loaded}")
     return loaded
 
-          class ChatRequest(BaseModel):
+class ChatRequest(BaseModel):
     message: str
 
 
 @app.post("/chat")
 async def chat(req: ChatRequest):
 
-    system = "You are a helpful AI assistant."
+    system = """
+You are a helpful AI assistant.
+Answer general questions clearly and concisely.
+"""
 
     answer = await call_llm_ladder(
         system=system,
