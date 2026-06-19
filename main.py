@@ -206,7 +206,7 @@ async function sendMessage(){
 
         chat.innerHTML +=
         `<div class="bot-message">
-            ${JSON.stringify(data,null,2)}
+            ${data.body}
          </div>`;
 
     }catch(err){
