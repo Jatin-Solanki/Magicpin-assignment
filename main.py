@@ -48,13 +48,167 @@ from fastapi.responses import HTMLResponse
 @app.get("/", response_class=HTMLResponse)
 async def root():
     return """
-    <html>
-      <body>
-        <h1>Vera AI Assistant</h1>
-        <p>Chat UI deployed successfully.</p>
-      </body>
-    </html>
-    """
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vera AI Assistant</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,sans-serif;
+}
+
+body{
+    background:#ece5dd;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+.header{
+    background:#075E54;
+    color:white;
+    padding:15px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.chat-box{
+    flex:1;
+    overflow-y:auto;
+    padding:20px;
+}
+
+.bot-message,
+.user-message{
+    max-width:75%;
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:10px;
+    word-wrap:break-word;
+}
+
+.bot-message{
+    background:white;
+}
+
+.user-message{
+    background:#DCF8C6;
+    margin-left:auto;
+}
+
+.input-area{
+    display:flex;
+    padding:10px;
+    background:white;
+    border-top:1px solid #ddd;
+}
+
+.input-area input{
+    flex:1;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:25px;
+    outline:none;
+}
+
+.input-area button{
+    margin-left:10px;
+    padding:12px 20px;
+    border:none;
+    border-radius:25px;
+    background:#25D366;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.input-area button:hover{
+    opacity:0.9;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+🤖 Vera AI Assistant
+</div>
+
+<div class="chat-box" id="chat">
+
+<div class="bot-message">
+Hello! I am Vera AI. Type a message below.
+</div>
+
+</div>
+
+<div class="input-area">
+
+<input
+id="message"
+type="text"
+placeholder="Type your message..."
+onkeypress="if(event.key==='Enter') sendMessage()"
+/>
+
+<button onclick="sendMessage()">
+Send
+</button>
+
+</div>
+
+<script>
+
+async function sendMessage(){
+
+    let input=document.getElementById("message");
+    let text=input.value.trim();
+
+    if(text==="") return;
+
+    let chat=document.getElementById("chat");
+
+    chat.innerHTML +=
+    `<div class="user-message">${text}</div>`;
+
+    input.value="";
+
+    try{
+
+        let response=await fetch("/v1/healthz");
+
+        let data=await response.json();
+
+        chat.innerHTML +=
+        `<div class="bot-message">
+            Server Status: ${data.status}
+         </div>`;
+
+    }catch(err){
+
+        chat.innerHTML +=
+        `<div class="bot-message">
+            Could not connect to backend.
+         </div>`;
+    }
+
+    chat.scrollTop=chat.scrollHeight;
+}
+
+</script>
+
+</body>
+</html>
+"""
 
 @app.get("/keep-alive")
 async def keep_alive():
