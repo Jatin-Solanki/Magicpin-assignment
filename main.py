@@ -40,9 +40,12 @@ START = time.time()
 # ─── Keep-alive scheduler ────────────────────────────────────────────────────
 last_keep_alive = time.time()
 
+from pathlib import Path
+from fastapi.responses import FileResponse
+
 @app.get("/")
 async def root():
-    return FileResponse("chat.html")
+    return FileResponse(Path(__file__).parent / "chat.html")
 
 @app.get("/keep-alive")
 async def keep_alive():
